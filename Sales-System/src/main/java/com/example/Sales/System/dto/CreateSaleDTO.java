@@ -8,14 +8,12 @@ import java.util.Set;
 
 @Getter
 @Setter
-public class SaleDTO extends HasLongIdDTO {
+public class CreateSaleDTO extends HasLongIdDTO {
 
-    private ClientDTO client;
+    private Long clientId;
 
-    private Set<SaleProductDTO> saleProducts;
+    private Set<SaleProductDTO> products;
 
     private LocalDateTime createdAt;
-
-    private Double total;
 
 }

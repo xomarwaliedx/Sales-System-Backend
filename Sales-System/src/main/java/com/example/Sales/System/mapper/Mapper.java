@@ -51,4 +51,23 @@ public interface Mapper {
 
     List<Sale> salesDTOListToSalesList(List<SaleDTO> saleDTOS);
 
+    @Mapping(target = "clientId", source = "client.id")
+    CreateSaleDTO salesToCreateSalesDTO(Sale sales);
+
+    @Mapping(target = "client.id", source = "clientId")
+    Sale createSalesDTOToSales(CreateSaleDTO createSaleDTO);
+
+    List<CreateSaleDTO> salesListToCreateSalesDTOList(List<Sale> sales);
+
+    List<Sale> createSalesDTOListToSalesList(List<CreateSaleDTO> createSaleDTOList);
+
+    @Mapping(target = "saleId", source = "sale.id")
+    SaleProductDTO saleProductToSaleProductDTO(SaleProduct saleProduct);
+
+    @Mapping(target = "sale.id", source = "saleId")
+    SaleProduct saleProductDTOToSaleProduct(SaleProductDTO saleProductDTO);
+
+    List<SaleProductDTO> saleProductListToSaleProductDTOList(List<SaleProduct> saleProducts);
+
+    List<SaleProduct> saleProductDTOListToSaleProductList(List<SaleProductDTO> saleProductDTOs);
 }

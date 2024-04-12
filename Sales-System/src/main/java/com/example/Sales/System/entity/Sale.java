@@ -19,7 +19,7 @@ public class Sale extends HasLongId{
     @JoinColumn(name = "client_id")
     private Client client;
 
-    @OneToMany(mappedBy = "sale")
+    @OneToMany(mappedBy = "sale",fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<SaleProduct> saleProducts;
 
     @Column(name = "total", nullable = false)

@@ -79,5 +79,13 @@ public class ProductService {
         productRepository.deleteById(id);
     }
 
-
+    public void addCategory(CategoryDTO categoryDTO) {
+        Category category = categoryRepository.findByName(categoryDTO.getName());
+        if (category == null) {
+            category = mapper.categoryDTOToCategory(categoryDTO);
+            categoryRepository.save(category);
+        }else {
+            throw new RuntimeException("Category already exists");
+        }
+    }
 }

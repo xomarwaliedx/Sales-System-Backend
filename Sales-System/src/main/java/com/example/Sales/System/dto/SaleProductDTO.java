@@ -15,7 +15,7 @@ import java.util.List;
 @Setter
 public class SaleProductDTO extends HasLongIdDTO {
 
-    private SaleDTO sale;
+    private Long saleId;
 
     private ProductDTO product;
 
