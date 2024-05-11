@@ -16,4 +16,7 @@ public class CreateSaleDTO extends HasLongIdDTO {
 
     private LocalDateTime createdAt;
 
+    private String address;
+
+    private String city;
 }

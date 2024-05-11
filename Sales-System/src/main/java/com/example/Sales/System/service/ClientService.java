@@ -25,6 +25,7 @@ public class ClientService {
 
     public void createClient(ClientDTO clientDTO) {
         Client client = mapper.clientDTOToClient(clientDTO);
+        client.setTotalSpending(0.0);
         clientRepository.save(client);
     }
 

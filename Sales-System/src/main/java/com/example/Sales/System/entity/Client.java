@@ -36,4 +36,7 @@ public class Client extends HasLongId {
     @Pattern(regexp = "^(?=.*\\S).{2,}$", message = "Name must have at least 2 non-space characters")
     private String address;
 
+    @Column(name = "total_spending")
+    private Double totalSpending;
+
 }

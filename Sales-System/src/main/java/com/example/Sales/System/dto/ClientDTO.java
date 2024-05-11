@@ -17,4 +17,6 @@ public class ClientDTO extends HasLongIdDTO {
 
     private String address;
 
+    private Double totalSpending;
+
 }

@@ -18,4 +18,9 @@ public class SaleDTO extends HasLongIdDTO {
 
     private Double total;
 
+    private String address;
+
+    private String city;
+
+
 }

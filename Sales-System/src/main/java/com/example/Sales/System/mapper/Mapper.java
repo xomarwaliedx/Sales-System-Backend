@@ -22,7 +22,7 @@ public interface Mapper {
 
     SellerDTO sellerToSellerDTO(Seller seller);
 
-    Set<SellerDTO> sellerListToSellerDTOList(Set<Seller> sellers);
+    List<SellerDTO> sellerListToSellerDTOList(List<Seller> sellers);
 
     Set<Seller> sellerDTOListToSellerList(Set<SellerDTO> sellerDTOs);
 
