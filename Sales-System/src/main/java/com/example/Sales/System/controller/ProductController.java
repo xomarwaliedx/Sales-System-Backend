@@ -12,14 +12,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Set;
 
 @RestController
 @RequestMapping("/api/product")
 @RequiredArgsConstructor
 public class ProductController {
 
-    private final Logger logger = LoggerFactory.getLogger(ClientController.class);
+    private final Logger logger = LoggerFactory.getLogger(ProductController.class);
 
     @Autowired
     private final ProductService productService;

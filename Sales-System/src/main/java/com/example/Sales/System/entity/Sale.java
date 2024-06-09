@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
 import java.util.Set;
 
 @RequiredArgsConstructor
@@ -17,7 +16,7 @@ import java.util.Set;
 public class Sale extends HasLongId{
     @ManyToOne(optional = false)
     @JoinColumn(name = "client_id")
-    private Client client;
+    private User client;
 
     @OneToMany(mappedBy = "sale",fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<SaleProduct> saleProducts;

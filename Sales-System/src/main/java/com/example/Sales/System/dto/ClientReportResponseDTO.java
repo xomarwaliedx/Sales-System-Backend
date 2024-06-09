@@ -1,6 +1,5 @@
 package com.example.Sales.System.dto;
 
-import com.example.Sales.System.entity.SaleProduct;
 import lombok.Getter;
 import lombok.Setter;
 

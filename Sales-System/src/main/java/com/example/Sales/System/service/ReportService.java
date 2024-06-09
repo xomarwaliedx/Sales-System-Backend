@@ -4,12 +4,12 @@ import com.example.Sales.System.dto.*;
 import com.example.Sales.System.entity.Product;
 import com.example.Sales.System.entity.Sale;
 import com.example.Sales.System.entity.SaleProduct;
-import com.example.Sales.System.entity.Seller;
+import com.example.Sales.System.entity.User;
 import com.example.Sales.System.mapper.Mapper;
-import com.example.Sales.System.repository.ClientRepository;
 import com.example.Sales.System.repository.ProductRepository;
 import com.example.Sales.System.repository.SaleProductRepository;
 import com.example.Sales.System.repository.SalesRepository;
+import com.example.Sales.System.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -28,7 +28,7 @@ public class ReportService {
 
     private final SalesRepository salesRepository;
 
-    private final ClientRepository clientRepository;
+    private final UserRepository userRepository;
 
     private final SaleProductRepository saleProductRepository;
 
@@ -55,14 +55,14 @@ public class ReportService {
         List<Product> products = saleProducts.stream().map(SaleProduct::getProduct).toList();
         List<ProductDTO> topSellingProductsDTO = mapper.productListToProductDTOList(topSellingProducts);
         response.setTopSellingProducts(topSellingProductsDTO);
-        List<Seller> sellers = products.stream().map(Product::getSeller).toList();
-        List<Seller> topPerformingSellers = sellers.stream()
+        List<User> sellers = products.stream().map(Product::getSeller).toList();
+        List<User> topPerformingSellers = sellers.stream()
                 .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
                 .entrySet().stream()
-                .sorted(Map.Entry.<Seller, Long>comparingByValue().reversed())
+                .sorted(Map.Entry.<User, Long>comparingByValue().reversed())
                 .map(Map.Entry::getKey)
                 .toList();
-        List<SellerDTO> topPerformingSellersDTO = mapper.sellerListToSellerDTOList(topPerformingSellers);
+        List<UserDTO> topPerformingSellersDTO = mapper.userListToUserDTOList(topPerformingSellers);
         response.setTopPerformingSellers(topPerformingSellersDTO);
         return response;
     }
@@ -70,8 +70,8 @@ public class ReportService {
     @Transactional
     public ClientReportResponseDTO clientReport() {
         ClientReportResponseDTO response = new ClientReportResponseDTO();
-        response.setTotalNumberOfClients(clientRepository.count());
-        response.setTopSpendingClients(clientRepository.findByOrderByTotalSpendingDesc().stream().map(mapper::clientToClientDTO).toList());
+        response.setTotalNumberOfClients(userRepository.countClients());
+        response.setTopSpendingClients(userRepository.findByRoleClientOrderByTotalSpendingDesc().stream().map(mapper::clientToClientDTO).toList());
         List<Sale> sales = salesRepository.findAll();
         Map<Long, List<SaleProductDTO>> clientActivity = sales.stream()
                 .flatMap(sale -> sale.getSaleProducts().stream())

@@ -1,12 +1,12 @@
 package com.example.Sales.System.dto;
 
-import jakarta.persistence.Column;
+import com.example.Sales.System.enums.Role;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class SellerDTO extends HasLongIdDTO {
+public class UserDTO extends HasLongIdDTO {
 
     private String name;
 
@@ -17,5 +17,11 @@ public class SellerDTO extends HasLongIdDTO {
     private String phone;
 
     private String address;
+
+    private String password;
+
+    private Double totalSpending;
+
+    private Role role;
 
 }

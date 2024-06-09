@@ -18,13 +18,13 @@ public interface Mapper {
 
     Set<Category> categoryDTOListToCategoryList(Set<CategoryDTO> categoryDTOs);
 
-    Seller sellerDTOToSeller(SellerDTO sellerDTO);
+    User userDTOToUser(UserDTO userDTO);
 
-    SellerDTO sellerToSellerDTO(Seller seller);
+    UserDTO userToUserDTO(User user);
 
-    List<SellerDTO> sellerListToSellerDTOList(List<Seller> sellers);
+    List<UserDTO> userListToUserDTOList(List<User> users);
 
-    Set<Seller> sellerDTOListToSellerList(Set<SellerDTO> sellerDTOs);
+    Set<User> userDTOListToUserList(Set<UserDTO> userDTOS);
 
     @Mapping(target = "category", ignore = true)
     Product productDTOToProduct(ProductDTO productDTO);
@@ -35,13 +35,13 @@ public interface Mapper {
 
     List<Product> productDTOListToProductList(List<ProductDTO> productDTOs);
 
-    Client clientDTOToClient(ClientDTO clientDTO);
+    User clientDTOToClient(ClientDTO clientDTO);
 
-    ClientDTO clientToClientDTO(Client client);
+    ClientDTO clientToClientDTO(User client);
 
-    List<ClientDTO> clientListToClientDTOList(List<Client> clients);
+    List<ClientDTO> clientListToClientDTOList(List<User> clients);
 
-    List<Client> clientDTOListToClientList(List<ClientDTO> clientDTOs);
+    List<User> clientDTOListToClientList(List<ClientDTO> clientDTOs);
 
     SaleDTO salesToSalesDTO(Sale sales);
 

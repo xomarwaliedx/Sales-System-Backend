@@ -4,11 +4,13 @@ import com.example.Sales.System.dto.CategoryDTO;
 import com.example.Sales.System.dto.ProductDTO;
 import com.example.Sales.System.entity.Category;
 import com.example.Sales.System.entity.Product;
-import com.example.Sales.System.entity.Seller;
+import com.example.Sales.System.entity.User;
+import com.example.Sales.System.enums.Role;
+import com.example.Sales.System.errors.WrongUserType;
 import com.example.Sales.System.mapper.Mapper;
 import com.example.Sales.System.repository.CategoryRepository;
 import com.example.Sales.System.repository.ProductRepository;
-import com.example.Sales.System.repository.SellerRepository;
+import com.example.Sales.System.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,7 +23,7 @@ import java.util.List;
 public class ProductService {
     private final Mapper mapper;
     private final ProductRepository productRepository;
-    private final SellerRepository sellerRepository;
+    private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
 
     public List<ProductDTO> getAllProducts() {
@@ -30,8 +32,10 @@ public class ProductService {
 
     public void createProduct(ProductDTO productDTO) {
         Product product = mapper.productDTOToProduct(productDTO);
-        Seller seller = sellerRepository.findById(productDTO.getSeller().getId()).orElseThrow();
-        product.setSeller(seller);
+        User user = userRepository.findById(productDTO.getSeller().getId()).orElseThrow();
+        if (user.getRole()!= Role.SELLER &&user.getRole()!= Role.BOTH)
+            throw new WrongUserType("not a seller");
+        product.setSeller(user);
         HashSet<Category> categories = new HashSet<>();
         for (CategoryDTO categoryDTO : productDTO.getCategory()) {
             Category category = categoryRepository.findByName(categoryDTO.getName());
@@ -55,8 +59,12 @@ public class ProductService {
             product.setPrice(productDTO.getPrice());
         if (productDTO.getAvailableQuantity() != null)
             product.setAvailableQuantity(productDTO.getAvailableQuantity());
-        if (productDTO.getSeller() != null)
-            product.setSeller(sellerRepository.findById(productDTO.getSeller().getId()).orElseThrow());
+        if (productDTO.getSeller() != null) {
+            User user=userRepository.findById(productDTO.getSeller().getId()).orElseThrow();
+            if(user.getRole()!=Role.SELLER &&user.getRole()!=Role.BOTH)
+                throw new WrongUserType("not a seller");
+            product.setSeller(user);
+        }
         if (productDTO.getPrice() != null)
             product.setPrice(productDTO.getPrice());
         if (productDTO.getCategory() != null) {

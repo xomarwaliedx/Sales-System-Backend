@@ -15,6 +15,6 @@ public class SalesReportResponseDTO {
 
     private List<ProductDTO> topSellingProducts;
 
-    private List<SellerDTO> topPerformingSellers;
+    private List<UserDTO> topPerformingSellers;
 
 }

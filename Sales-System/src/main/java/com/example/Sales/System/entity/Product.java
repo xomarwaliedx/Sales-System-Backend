@@ -3,7 +3,10 @@ package com.example.Sales.System.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.PositiveOrZero;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.Set;
 
@@ -33,7 +36,7 @@ public class Product extends HasLongId {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "seller_id")
-    private Seller seller;
+    private User seller;
 
     @Column(name = "available_quantity", nullable = false)
     @PositiveOrZero(message = "Quantity must not be negative")

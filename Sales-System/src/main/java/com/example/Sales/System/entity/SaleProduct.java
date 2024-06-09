@@ -1,12 +1,9 @@
 package com.example.Sales.System.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-
-import java.util.List;
 
 @RequiredArgsConstructor
 @Getter

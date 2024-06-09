@@ -1,9 +1,7 @@
 package com.example.Sales.System.controller;
 
-import com.example.Sales.System.dto.ClientDTO;
 import com.example.Sales.System.dto.CreateSaleDTO;
 import com.example.Sales.System.dto.SaleDTO;
-import com.example.Sales.System.service.ClientService;
 import com.example.Sales.System.service.SalesService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -20,7 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SaleController {
 
-    private final Logger logger = LoggerFactory.getLogger(ClientController.class);
+    private final Logger logger = LoggerFactory.getLogger(SaleController.class);
 
     @Autowired
     private final SalesService salesService;
