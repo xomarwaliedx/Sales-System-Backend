@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
     @Query("select c from User c where c.role = com.example.Sales.System.enums.Role.CLIENT order by c.totalSpending DESC")
@@ -13,5 +14,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("select count(c) from User c where c.role = 'client'")
     long countClients();
 
-    User findByEmail(String email);
+    Optional<User> findByEmail(String email);
 }

@@ -7,6 +7,9 @@ import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 
 import java.util.Collection;
@@ -18,7 +21,7 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name="user")
-public class User extends HasLongId {
+public class User extends HasLongId implements UserDetails {
 
     @Column(name = "name", nullable = false)
     @Pattern(regexp = "^(?=.*\\S).{2,}$", message = "Name must have at least 2 non-space characters")
@@ -52,4 +55,34 @@ public class User extends HasLongId {
 
     @Column(name = "total_spending")
     private Double totalSpending;
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority(role.name()));
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }

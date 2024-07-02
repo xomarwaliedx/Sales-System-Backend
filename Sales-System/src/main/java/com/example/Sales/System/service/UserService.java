@@ -3,31 +3,47 @@ package com.example.Sales.System.service;
 import com.example.Sales.System.dto.UserDTO;
 import com.example.Sales.System.entity.User;
 import com.example.Sales.System.enums.Role;
+import com.example.Sales.System.errors.RestrictedAccess;
+import com.example.Sales.System.errors.WrongUserType;
 import com.example.Sales.System.mapper.Mapper;
 import com.example.Sales.System.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
     private final Mapper mapper;
     private final UserRepository userRepository;
-//    private final PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
+    private User getAuthenticatedUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getPrincipal() instanceof User) {
+            return (User) authentication.getPrincipal();
+        }
+        throw new IllegalStateException("User not authenticated");
+    }
 
     public List<UserDTO> getAllUsers() {
-        return mapper.userListToUserDTOList(userRepository.findAll());
+        if (getAuthenticatedUser().getRole()==Role.ADMIN)
+            return mapper.userListToUserDTOList(userRepository.findAll());
+        throw new WrongUserType("not an admin");
     }
 
     public void createUser(UserDTO userDTO) {
-
+        User authUser=getAuthenticatedUser();
+        if (authUser.getRole()!=Role.ADMIN)
+            throw new WrongUserType("not an admin");
         User user = mapper.userDTOToUser(userDTO);
-//        String encodedPassword = passwordEncoder.encode(userDTO.getPassword());
-        String encodedPassword =userDTO.getPassword();
+        String encodedPassword = passwordEncoder.encode(userDTO.getPassword());
         user.setPassword(encodedPassword);
         if (userDTO.getRole() == Role.BOTH || userDTO.getRole() == Role.CLIENT) user.setTotalSpending(0.0);
         userRepository.save(user);
@@ -35,6 +51,9 @@ public class UserService {
 
     @Transactional
     public void updateUser(UserDTO userDTO) {
+        User authUser=getAuthenticatedUser();
+        if (authUser.getRole()!=Role.ADMIN && !Objects.equals(authUser.getId(), userDTO.getId()))
+                throw new WrongUserType("not an admin");
         User user = userRepository.findById(userDTO.getId()).orElseThrow();
         if (userDTO.getName() != null) user.setName(userDTO.getName());
         if (userDTO.getLastName() != null) user.setLastName(userDTO.getLastName());
@@ -42,8 +61,7 @@ public class UserService {
         if (userDTO.getPhone() != null) user.setPhone(userDTO.getPhone());
         if (userDTO.getAddress() != null) user.setAddress(userDTO.getAddress());
         if (userDTO.getPassword() != null) {
-//            String encodedPassword = passwordEncoder.encode(userDTO.getPassword());
-            String encodedPassword = userDTO.getPassword();
+            String encodedPassword = passwordEncoder.encode(userDTO.getPassword());
             user.setPassword(encodedPassword);
         }
         if (userDTO.getRole() != null && userDTO.getTotalSpending() != null)
@@ -54,7 +72,11 @@ public class UserService {
     }
 
     public void deleteUser(Long id) {
-        userRepository.deleteById(id);
+        User authUser=getAuthenticatedUser();
+        if (authUser.getRole()==Role.ADMIN|| Objects.equals(authUser.getId(), id))
+            userRepository.deleteById(id);
+        else
+            throw new WrongUserType("not an admin nor your account");
     }
 
 }

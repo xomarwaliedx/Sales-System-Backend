@@ -24,7 +24,7 @@ public class ProductController {
     private final ProductService productService;
 
     @GetMapping("")
-    public ResponseEntity<List<ProductDTO>> getBuildProperties() {
+    public ResponseEntity<List<ProductDTO>> getAllProducts() {
         logger.info("Getting all products");
         return ResponseEntity.status(HttpStatus.OK).body(productService.getAllProducts());
     }

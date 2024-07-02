@@ -23,7 +23,7 @@ public class SaleController {
     @Autowired
     private final SalesService salesService;
 
-    @GetMapping("")
+    @GetMapping("/all")
     public ResponseEntity<List<SaleDTO>> getAllSales() {
         logger.info("Getting all sales");
         return ResponseEntity.status(HttpStatus.OK).body(salesService.getAllSales());
