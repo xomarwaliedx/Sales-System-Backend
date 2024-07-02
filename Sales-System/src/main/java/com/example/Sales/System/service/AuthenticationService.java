@@ -4,6 +4,7 @@ import com.example.Sales.System.dto.AuthenticationDTO;
 import com.example.Sales.System.dto.AuthenticationResponseDTO;
 import com.example.Sales.System.dto.UserDTO;
 import com.example.Sales.System.entity.User;
+import com.example.Sales.System.enums.Role;
 import com.example.Sales.System.mapper.Mapper;
 import com.example.Sales.System.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,8 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
 
     public AuthenticationResponseDTO register(UserDTO userDTO) {
+        if(userDTO.getRole()== Role.ADMIN)
+            throw new RuntimeException("Admin cannot be registered");
         User user = mapper.userDTOToUser(userDTO);
         user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         userRepository.save(user);
