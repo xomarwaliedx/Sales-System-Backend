@@ -28,17 +28,20 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
 
     public AuthenticationResponseDTO register(UserDTO userDTO) {
-        if(userDTO.getRole()== Role.ADMIN)
-            throw new RuntimeException("Admin cannot be registered");
+        if (userDTO.getRole() == Role.ADMIN) {
+            if (userRepository.countByRole(Role.ADMIN) > 0)
+                throw new RuntimeException("Admin cannot be registered");
+        }
         User user = mapper.userDTOToUser(userDTO);
         user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         userRepository.save(user);
         return new AuthenticationResponseDTO(jwtService.generateToken(user));
     }
+
     public AuthenticationResponseDTO login(AuthenticationDTO authenticationDTO) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationDTO.getEmail(), authenticationDTO.getPassword()));
         User user = userRepository.findByEmail(authenticationDTO.getEmail()).orElseThrow(() -> new RuntimeException("User not found"));
-        String token=jwtService.generateToken(user);
+        String token = jwtService.generateToken(user);
         return new AuthenticationResponseDTO(token);
     }
 }

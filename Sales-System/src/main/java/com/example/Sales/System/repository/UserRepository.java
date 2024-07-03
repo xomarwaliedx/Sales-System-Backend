@@ -1,6 +1,7 @@
 package com.example.Sales.System.repository;
 
 import com.example.Sales.System.entity.User;
+import com.example.Sales.System.enums.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -15,4 +16,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     long countClients();
 
     Optional<User> findByEmail(String email);
+
+    long countByRole(Role role);
+
 }
