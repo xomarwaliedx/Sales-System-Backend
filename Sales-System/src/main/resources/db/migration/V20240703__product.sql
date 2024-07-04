@@ -1,0 +1,12 @@
+CREATE TABLE `product` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `name` VARCHAR(100) NOT NULL,
+  `description` VARCHAR(255) NOT NULL,
+  `seller_id` BIGINT NOT NULL,
+  `available_quantity` INT NOT NULL,
+  `price` DOUBLE NOT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `fk_product_seller` FOREIGN KEY (`seller_id`) REFERENCES `user` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB;
