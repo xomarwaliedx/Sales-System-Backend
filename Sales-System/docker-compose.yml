@@ -1,0 +1,36 @@
+version: '3.8'
+services:
+  saleDatabase:
+    platform: linux/amd64
+    hostname: saleSystem
+    image: mysql:8
+    restart: always
+    networks:
+      - sales
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: sales_management
+    ports:
+      - "3307:3306"
+
+  backend:
+    image: maven:3.9.6-amazoncorretto-17
+    hostname: backend
+    networks:
+      - sales
+    build:
+      context: .
+    working_dir: /app/Sale_System_backend
+    command: >
+      sh -c "rm -rf target && mvn dependency:go-offline -B && mvn clean package -T 4 && java -jar target/Sales-System-0.0.1-SNAPSHOT.jar "
+    volumes:
+      - .:/app/Sale_System_backend
+    depends_on:
+      - saleDatabase
+    ports:
+      - "8080:8080"
+
+networks:
+  sales:
+    driver: bridge
+
