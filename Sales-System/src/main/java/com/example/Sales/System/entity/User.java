@@ -20,7 +20,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
-@Table(name="user")
+@Table(name="user", indexes = {@Index(name = "idx_user_email", columnList = "email")})
 public class User extends HasLongId implements UserDetails {
 
     @Column(name = "name", nullable = false)
