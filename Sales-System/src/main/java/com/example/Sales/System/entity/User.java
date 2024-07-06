@@ -56,6 +56,9 @@ public class User extends HasLongId implements UserDetails {
     @Column(name = "total_spending")
     private Double totalSpending;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Token> tokens;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.name()));

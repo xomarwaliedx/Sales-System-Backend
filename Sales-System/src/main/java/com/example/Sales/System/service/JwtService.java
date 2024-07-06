@@ -1,10 +1,12 @@
 package com.example.Sales.System.service;
 
 import com.example.Sales.System.entity.User;
+import com.example.Sales.System.repository.TokenRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -14,9 +16,12 @@ import java.util.Date;
 import java.util.function.Function;
 
 @Service
+@RequiredArgsConstructor
 public class JwtService {
     @Value("${app.secretKey}")
     private String SECRET_KEY;
+
+    private final TokenRepository tokenRepository;
 
     public String extractUsername(String token){
         return extractClaim(token, Claims::getSubject);
@@ -24,7 +29,10 @@ public class JwtService {
 
     public boolean isValid(String token, UserDetails user){
         String username = extractUsername(token);
-        return username.equals(user.getUsername())&&!isTokenExpired(token);
+
+        boolean isNotLoggedOut=tokenRepository.findByToken(token).map(t->!t.isLoggedOut()).orElse(false);
+
+        return username.equals(user.getUsername())&&!isTokenExpired(token) && isNotLoggedOut;
     }
 
     private boolean isTokenExpired(String token){
