@@ -1,5 +1,6 @@
 package com.example.Sales.System.service;
 
+import com.example.Sales.System.Utility.AuthenticationUtils;
 import com.example.Sales.System.dto.CategoryDTO;
 import com.example.Sales.System.dto.ProductDTO;
 import com.example.Sales.System.entity.Category;
@@ -30,16 +31,8 @@ public class ProductService {
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
 
-    private User getAuthenticatedUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.getPrincipal() instanceof User) {
-            return (User) authentication.getPrincipal();
-        }
-        throw new IllegalStateException("User not authenticated");
-    }
-
     public List<ProductDTO> getAllProducts() {
-        User user = getAuthenticatedUser();
+        User user = AuthenticationUtils.getAuthenticatedUser();
         if (user.getRole() == Role.ADMIN)
             return mapper.productListToProductDTOList(productRepository.findAll());
         else if (user.getRole() == Role.SELLER || user.getRole() == Role.BOTH)
@@ -49,7 +42,7 @@ public class ProductService {
     }
 
     public void createProduct(ProductDTO productDTO) {
-        User sender = getAuthenticatedUser();
+        User sender = AuthenticationUtils.getAuthenticatedUser();
         if(!Objects.equals(sender.getId(), productDTO.getSeller().getId()))
             throw new RestrictedAccess("Restricted Access");
         Product product = mapper.productDTOToProduct(productDTO);
@@ -74,7 +67,7 @@ public class ProductService {
     @Transactional
     public void updateProduct(ProductDTO productDTO) {
         Product product = productRepository.findById(productDTO.getId()).orElseThrow();
-        User sender = getAuthenticatedUser();
+        User sender = AuthenticationUtils.getAuthenticatedUser();
         if (!Objects.equals(product.getSeller().getId(), sender.getId()))
             throw new RestrictedAccess("Restricted Access");
         if (productDTO.getName() != null)
@@ -108,7 +101,7 @@ public class ProductService {
     }
 
     public void deleteProduct(Long id) {
-        User sender = getAuthenticatedUser();
+        User sender = AuthenticationUtils.getAuthenticatedUser();
         Product product=productRepository.findById(id).orElseThrow();
         if (!Objects.equals(product.getSeller().getId(), sender.getId()))
             throw new RestrictedAccess("Restricted Access");

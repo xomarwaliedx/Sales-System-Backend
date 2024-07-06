@@ -1,5 +1,6 @@
 package com.example.Sales.System.service;
 
+import com.example.Sales.System.Utility.AuthenticationUtils;
 import com.example.Sales.System.dto.CreateSaleDTO;
 import com.example.Sales.System.dto.SaleDTO;
 import com.example.Sales.System.dto.SaleProductDTO;
@@ -36,16 +37,8 @@ public class SalesService {
     private final UserRepository userRepository;
 
 
-    private User getAuthenticatedUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.getPrincipal() instanceof User) {
-            return (User) authentication.getPrincipal();
-        }
-        throw new IllegalStateException("User not authenticated");
-    }
-
     public List<SaleDTO> getAllSales() {
-        User user = getAuthenticatedUser();
+        User user = AuthenticationUtils.getAuthenticatedUser();
         if (user.getRole() == Role.CLIENT)
             return mapper.salesListToSalesDTOList(salesRepository.findByClient(user));
         if (user.getRole() == Role.SELLER)
@@ -60,7 +53,7 @@ public class SalesService {
 
     @Transactional
     public void createSale(CreateSaleDTO createSaleDTO) {
-        User authUser = getAuthenticatedUser();
+        User authUser = AuthenticationUtils.getAuthenticatedUser();
         if (authUser.getRole() != Role.CLIENT && authUser.getRole() != Role.BOTH)
             throw new WrongUserType("not a client");
         if(!Objects.equals(createSaleDTO.getClientId(), authUser.getId()))
@@ -108,7 +101,7 @@ public class SalesService {
     }
 
     public void updateSale(SaleDTO saleDTO) {
-        User authUser = getAuthenticatedUser();
+        User authUser = AuthenticationUtils.getAuthenticatedUser();
         if (authUser.getRole() != Role.CLIENT && authUser.getRole() != Role.BOTH)
             throw new WrongUserType("not a client");
         if(!Objects.equals(saleDTO.getClient().getId(), authUser.getId()))

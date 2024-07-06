@@ -1,5 +1,6 @@
 package com.example.Sales.System.service;
 
+import com.example.Sales.System.Utility.AuthenticationUtils;
 import com.example.Sales.System.dto.UserDTO;
 import com.example.Sales.System.entity.User;
 import com.example.Sales.System.enums.Role;
@@ -24,22 +25,15 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    private User getAuthenticatedUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.getPrincipal() instanceof User) {
-            return (User) authentication.getPrincipal();
-        }
-        throw new IllegalStateException("User not authenticated");
-    }
 
     public List<UserDTO> getAllUsers() {
-        if (getAuthenticatedUser().getRole()==Role.ADMIN)
+        if (AuthenticationUtils.getAuthenticatedUser().getRole()==Role.ADMIN)
             return mapper.userListToUserDTOList(userRepository.findAll());
         throw new WrongUserType("not an admin");
     }
 
     public void createUser(UserDTO userDTO) {
-        User authUser=getAuthenticatedUser();
+        User authUser=AuthenticationUtils.getAuthenticatedUser();
         if (authUser.getRole()!=Role.ADMIN)
             throw new WrongUserType("not an admin");
         User user = mapper.userDTOToUser(userDTO);
@@ -51,7 +45,7 @@ public class UserService {
 
     @Transactional
     public void updateUser(UserDTO userDTO) {
-        User authUser=getAuthenticatedUser();
+        User authUser=AuthenticationUtils.getAuthenticatedUser();
         if (authUser.getRole()!=Role.ADMIN && !Objects.equals(authUser.getId(), userDTO.getId()))
                 throw new WrongUserType("not an admin");
         User user = userRepository.findById(userDTO.getId()).orElseThrow();
@@ -72,7 +66,7 @@ public class UserService {
     }
 
     public void deleteUser(Long id) {
-        User authUser=getAuthenticatedUser();
+        User authUser=AuthenticationUtils.getAuthenticatedUser();
         if (authUser.getRole()==Role.ADMIN|| Objects.equals(authUser.getId(), id))
             userRepository.deleteById(id);
         else
